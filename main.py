@@ -15,19 +15,22 @@ import time
 
 import RPi.GPIO as GPIO 
 
-PIN = 16
+PIN =23 
 
 # Configura o modo de definicao de pinos como BOARD
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
 # Destiva avisos
 GPIO.setwarnings(False) 
 
 # Resistencia interna no input
-GPIO.setup(PIN,GPIO.IN, pull_up_down = GPIO.PUD_DOWN) 
+#GPIO.setup(PIN,GPIO.IN, pull_up_down = GPIO.PUD_DOWN) 
+
+#modificacao 6 nov
+GPIO.setup(PIN, GPIO.IN)
 
 # Cadastrando evento de borda de descida
-GPIO.add_event_detect(PIN, GPIO.FALLING, bouncetime = 200)
+#GPIO.add_event_detect(PIN, GPIO.FALLING, bouncetime = 200)
 
 
 
@@ -47,7 +50,8 @@ if existLineProduction() == False:
 #-------------------------------------------------------------------------------
 while (1):
 
-	if GPIO.event_detected(PIN):
+	#if GPIO.event_detected(PIN):
+	if (GPIO.input(PIN)==GPIO.HIGH):
 
 		if (existSignalFromHour() != True):
 
@@ -61,7 +65,7 @@ while (1):
 			except Exception as e:
 				print("Erro ao tentar Cadastrar um novo Registro: ", e)
 
-            # Verifica se existe registros na tabela 1
+            		# Verifica se existe registros na tabela 1
 			if existDataInTable1():
 
 				try:
@@ -85,7 +89,7 @@ while (1):
 				print("Erro ao tentar Incrementar um Registro: ", e)
 
 
-            # Verifica se existe registros na tabela 1
+            		# Verifica se existe registros na tabela 1
 			if existDataInTable1():
 
 				try:
@@ -95,4 +99,5 @@ while (1):
 
 			else:
 				print("Nao existe registros na tabela 1. O campo contador nao pode ser Incrementado")
+	time.sleep(.2)
 #-------------------------------------------------------------------------------
